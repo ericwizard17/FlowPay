@@ -20,7 +20,18 @@ FlowPay ile gelir ve giderlerinizi kolayca takip edin, akıllı bütçeler oluş
 - ✅ **Güvenli Kimlik Doğrulama** - Biyometrik giriş desteği
 - ✅ **Offline Çalışma** - İnternet olmadan da kullanabilirsiniz
 
-### 🌐 Web Sitesi
+### 🌐 Web Uygulaması
+- ✅ **Tam İşlevsel Finans Takibi** - Tarayıcıda çalışan gerçek uygulama
+- ✅ **Dashboard** - Gelir, gider, bakiye ve tasarruf özeti
+- ✅ **İşlem Yönetimi** - Gelir ve gider ekleme, listeleme, filtreleme
+- ✅ **Bütçe Takibi** - Kategorilere göre bütçe oluşturma ve takip
+- ✅ **Hedef Belirleme** - Finansal hedefler ve ilerleme takibi
+- ✅ **Grafikler ve Raporlar** - Chart.js ile görsel analizler
+- ✅ **LocalStorage** - Veriler tarayıcıda saklanır
+- ✅ **Responsive Tasarım** - Mobil ve desktop uyumlu
+- ✅ **Modern UI** - Gradient, animasyonlar ve premium tasarım
+
+### 🌐 Web Sitesi (Landing Page)
 - ✅ **Modern Premium Tasarım** - Gradient ve glassmorphism efektleri
 - ✅ **Tam Responsive** - Mobil, tablet ve desktop uyumlu
 - ✅ **Smooth Animasyonlar** - Profesyonel geçişler ve efektler
@@ -77,9 +88,25 @@ npm run ios
 
 Detaylı kurulum için: [ANDROID_STUDIO_GUIDE.md](apps/mobile/ANDROID_STUDIO_GUIDE.md)
 
+### Web Uygulamasını Kullanma
+
+**Ücretsiz ve tam işlevsel finans takip uygulaması:**
+
+1. Tarayıcınızda `apps/web/app.html` dosyasını açın
+2. Veya [buradan canlı demo](https://ericwizard17.github.io/FlowPay/apps/web/app.html)'yu deneyin
+3. Tüm veriler tarayıcınızda (localStorage) saklanır
+4. İnternet bağlantısı gerektirmez
+
+**Özellikler:**
+- ✅ Gelir/Gider ekleme ve listeleme
+- ✅ Bütçe oluşturma ve takip
+- ✅ Finansal hedefler belirleme
+- ✅ Grafikler ve raporlar
+- ✅ Filtreleme ve arama
+
 ### Web Sitesini Görüntüleme
 
-Web sitesini görüntülemek için `apps/web/index.html` dosyasını tarayıcınızda açın.
+Landing page için `apps/web/index.html` dosyasını tarayıcınızda açın.
 
 ## 📂 Proje Yapısı
 
