@@ -125,13 +125,25 @@ FlowPay/
 │   │   ├── App.tsx          # Ana uygulama
 │   │   └── package.json
 │   │
-│   ├── web/                 # Web Sitesi
-│   │   ├── index.html       # Ana sayfa
+│   ├── web/                 # Web Sitesi & Uygulama
+│   │   ├── index.html       # Landing page
+│   │   ├── app.html         # Web uygulaması
 │   │   ├── privacy.html     # Gizlilik politikası
-│   │   ├── styles.css       # Stil dosyası
-│   │   └── script.js        # JavaScript
+│   │   ├── app-styles.css   # Uygulama stilleri
+│   │   └── app-script.js    # Uygulama JavaScript
 │   │
-│   └── api/                 # Backend API (gelecek)
+│   └── api/                 # Backend API ✅ TAMAMLANDI
+│       ├── src/
+│       │   ├── middleware/  # Auth, validation, error handling
+│       │   ├── routes/      # API endpoints
+│       │   ├── schemas/     # Zod validation schemas
+│       │   └── index.ts     # Ana server
+│       ├── prisma/
+│       │   ├── schema.prisma # Database schema
+│       │   └── seed.ts      # Seed data
+│       ├── API_DOCUMENTATION.md
+│       ├── README.md
+│       └── package.json
 │
 ├── KURULUM_REHBERI.md       # Detaylı kurulum rehberi
 └── README.md                # Bu dosya
@@ -148,6 +160,15 @@ FlowPay/
 - **React Query** - Veri yönetimi
 - **Axios** - HTTP istekleri
 - **date-fns** - Tarih işlemleri
+
+### Backend API ✅
+- **Node.js & Express** - Server framework
+- **TypeScript** - Tip güvenliği
+- **Prisma ORM** - Database yönetimi
+- **PostgreSQL/SQLite** - Database
+- **JWT** - Authentication
+- **Zod** - Validation
+- **bcrypt** - Password hashing
 
 ### Web Sitesi
 - **HTML5** - Semantik yapı
@@ -208,10 +229,16 @@ FlowPay'i kullandığınız için teşekkür ederiz! Finansal özgürlüğünüz
 
 ## 📈 Yol Haritası
 
-- [ ] Backend API geliştirmesi
+- [x] **Backend API geliştirmesi** ✅ TAMAMLANDI
+  - [x] Authentication & JWT
+  - [x] Transaction CRUD
+  - [x] Budget Management
+  - [x] Dashboard Analytics
+  - [x] Reports & Export
+  - [x] Category Management
 - [ ] Cloud senkronizasyon
 - [ ] iOS uygulaması
-- [ ] Web dashboard
+- [ ] Web dashboard (React)
 - [ ] Çoklu para birimi desteği
 - [ ] Fatura tarama (OCR)
 - [ ] Yatırım takibi

@@ -2,6 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
+import { errorHandler } from './middleware/errorHandler';
+
+// Import routes
+import authRoutes from './routes/auth.routes';
+import transactionRoutes from './routes/transaction.routes';
+import budgetRoutes from './routes/budget.routes';
+import dashboardRoutes from './routes/dashboard.routes';
+import categoryRoutes from './routes/category.routes';
+import reportRoutes from './routes/report.routes';
 
 // Load environment variables
 dotenv.config();
@@ -10,44 +19,47 @@ const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// ============================================
+// MIDDLEWARE
+// ============================================
+
 app.use(cors({
     origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+    credentials: true,
 }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Request logging
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+    next();
+});
+
+// ============================================
+// ROUTES
+// ============================================
 
 // Health check
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok', message: 'Finans Takip API is running' });
+    res.json({
+        status: 'ok',
+        message: 'FlowPay API is running',
+        version: '2.0.0',
+        timestamp: new Date().toISOString(),
+    });
 });
 
-// ============================================
-// TRANSACTIONS ROUTES
-// ============================================
+// API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/transactions', transactionRoutes);
+app.use('/api/budgets', budgetRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/reports', reportRoutes);
 
-// Get all transactions for a user
-app.get('/api/transactions', async (req, res) => {
-    try {
-        const userId = req.headers['user-id'] as string; // Basit auth - gerçek uygulamada JWT kullanılmalı
-
-        if (!userId) {
-            return res.status(401).json({ error: 'User ID required' });
-        }
-
-        const transactions = await prisma.transaction.findMany({
-            where: { userId },
-            orderBy: { date: 'desc' },
-        });
-
-        res.json(transactions);
-    } catch (error) {
-        console.error('Error fetching transactions:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// Create a new transaction
-app.post('/api/transactions', async (req, res) => {
+// Legacy AI analysis route (kept for backward compatibility)
+app.get('/api/ai/analysis', async (req, res, next) => {
     try {
         const userId = req.headers['user-id'] as string;
 
@@ -55,95 +67,6 @@ app.post('/api/transactions', async (req, res) => {
             return res.status(401).json({ error: 'User ID required' });
         }
 
-        const { amount, category, note, date } = req.body;
-
-        const transaction = await prisma.transaction.create({
-            data: {
-                userId,
-                amount: parseFloat(amount),
-                category,
-                note,
-                date: date ? new Date(date) : new Date(),
-            },
-        });
-
-        res.status(201).json(transaction);
-    } catch (error) {
-        console.error('Error creating transaction:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// ============================================
-// BUDGETS ROUTES
-// ============================================
-
-// Get all budgets for a user
-app.get('/api/budgets', async (req, res) => {
-    try {
-        const userId = req.headers['user-id'] as string;
-
-        if (!userId) {
-            return res.status(401).json({ error: 'User ID required' });
-        }
-
-        const month = req.query.month as string || new Date().toISOString().slice(0, 7);
-
-        const budgets = await prisma.budget.findMany({
-            where: {
-                userId,
-                month,
-            },
-        });
-
-        res.json(budgets);
-    } catch (error) {
-        console.error('Error fetching budgets:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// Create a new budget
-app.post('/api/budgets', async (req, res) => {
-    try {
-        const userId = req.headers['user-id'] as string;
-
-        if (!userId) {
-            return res.status(401).json({ error: 'User ID required' });
-        }
-
-        const { category, limitAmount, month } = req.body;
-
-        const budget = await prisma.budget.create({
-            data: {
-                userId,
-                category,
-                limitAmount: parseFloat(limitAmount),
-                month: month || new Date().toISOString().slice(0, 7),
-            },
-        });
-
-        res.status(201).json(budget);
-    } catch (error) {
-        console.error('Error creating budget:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// ============================================
-// AI ANALYSIS ROUTE
-// ============================================
-
-// Get AI price analysis
-app.get('/api/ai/analysis', async (req, res) => {
-    try {
-        const userId = req.headers['user-id'] as string;
-
-        if (!userId) {
-            return res.status(401).json({ error: 'User ID required' });
-        }
-
-        // Basit AI analizi - son 3 ayın verilerini karşılaştır
         const now = new Date();
         const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, 1);
 
@@ -151,12 +74,11 @@ app.get('/api/ai/analysis', async (req, res) => {
             where: {
                 userId,
                 date: { gte: threeMonthsAgo },
-                amount: { lt: 0 }, // Sadece giderler
+                amount: { lt: 0 },
             },
             orderBy: { date: 'desc' },
         });
 
-        // Kategori bazlı analiz
         const categoryAnalysis: Record<string, { current: number; previous: number }> = {};
 
         transactions.forEach(t => {
@@ -175,7 +97,6 @@ app.get('/api/ai/analysis', async (req, res) => {
             }
         });
 
-        // En büyük artışı bul
         let maxIncrease = 0;
         let maxCategory = '';
 
@@ -198,19 +119,53 @@ app.get('/api/ai/analysis', async (req, res) => {
             analysis: categoryAnalysis,
         });
     } catch (error) {
-        console.error('Error generating AI analysis:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 });
 
-// Start server
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({
+        error: 'Not Found',
+        message: `Route ${req.method} ${req.path} not found`,
+    });
+});
+
+// Error handler (must be last)
+app.use(errorHandler);
+
+// ============================================
+// SERVER START
+// ============================================
+
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
+    console.log('');
+    console.log('🚀 ========================================');
+    console.log('🚀  FlowPay API Server Started');
+    console.log('🚀 ========================================');
+    console.log(`📍 Server: http://localhost:${PORT}`);
+    console.log(`💚 Health: http://localhost:${PORT}/health`);
+    console.log(`🔐 Auth: http://localhost:${PORT}/api/auth`);
+    console.log(`💰 Transactions: http://localhost:${PORT}/api/transactions`);
+    console.log(`📊 Budgets: http://localhost:${PORT}/api/budgets`);
+    console.log(`📈 Dashboard: http://localhost:${PORT}/api/dashboard`);
+    console.log(`🏷️  Categories: http://localhost:${PORT}/api/categories`);
+    console.log(`📄 Reports: http://localhost:${PORT}/api/reports`);
+    console.log('🚀 ========================================');
+    console.log('');
 });
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
+    console.log('\n🛑 Shutting down gracefully...');
     await prisma.$disconnect();
+    console.log('✅ Database disconnected');
+    process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+    console.log('\n🛑 Shutting down gracefully...');
+    await prisma.$disconnect();
+    console.log('✅ Database disconnected');
     process.exit(0);
 });
