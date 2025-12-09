@@ -1,0 +1,199 @@
+# FlowPay - Akıllı Finans Yönetimi 💰
+
+![FlowPay Banner](https://img.shields.io/badge/FlowPay-Akıllı%20Finans-667eea?style=for-the-badge)
+![React Native](https://img.shields.io/badge/React%20Native-0.73-61dafb?style=for-the-badge&logo=react)
+![Expo](https://img.shields.io/badge/Expo-50.0-000020?style=for-the-badge&logo=expo)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178c6?style=for-the-badge&logo=typescript)
+
+FlowPay ile gelir ve giderlerinizi kolayca takip edin, akıllı bütçeler oluşturun ve finansal hedeflerinize ulaşın. Yapay zeka destekli önerilerle paranızı daha iyi yönetin.
+
+## ✨ Özellikler
+
+### 📱 Mobil Uygulama
+- ✅ **Gelir/Gider Takibi** - Tüm finansal işlemlerinizi kolayca kaydedin
+- ✅ **Akıllı Kategorileme** - Otomatik kategori önerileri
+- ✅ **Bütçe Yönetimi** - Kategorilere göre bütçe oluşturun ve takip edin
+- ✅ **Finansal Hedefler** - Hedeflerinizi belirleyin ve ilerlemenizi görün
+- ✅ **AI Önerileri** - Yapay zeka destekli tasarruf önerileri
+- ✅ **Detaylı Raporlar** - Grafikler ve analizlerle finansal durumunuzu görün
+- ✅ **Dark Mode** - Göz dostu karanlık tema
+- ✅ **Güvenli Kimlik Doğrulama** - Biyometrik giriş desteği
+- ✅ **Offline Çalışma** - İnternet olmadan da kullanabilirsiniz
+
+### 🌐 Web Sitesi
+- ✅ **Modern Premium Tasarım** - Gradient ve glassmorphism efektleri
+- ✅ **Tam Responsive** - Mobil, tablet ve desktop uyumlu
+- ✅ **Smooth Animasyonlar** - Profesyonel geçişler ve efektler
+- ✅ **SEO Optimize** - Arama motorları için optimize edilmiş
+- ✅ **Gizlilik Politikası** - KVKK ve GDPR uyumlu
+
+## 🚀 Hızlı Başlangıç
+
+### Gereksinimler
+
+- Node.js 18 veya üzeri
+- npm veya yarn
+- Android Studio (Android geliştirme için)
+- Expo CLI
+
+### Kurulum
+
+1. **Repoyu klonlayın**
+```bash
+git clone https://github.com/ericwizard17/FlowPay.git
+cd FlowPay
+```
+
+2. **Mobil uygulama bağımlılıklarını yükleyin**
+```bash
+cd apps/mobile
+npm install --legacy-peer-deps
+```
+
+3. **Metro Bundler'ı başlatın**
+```bash
+npm start
+```
+
+4. **Uygulamayı çalıştırın**
+
+**Android:**
+```bash
+npm run android
+```
+
+**iOS:**
+```bash
+npm run ios
+```
+
+### Android Studio'da Açma
+
+1. Android Studio'yu açın
+2. "Open Project" seçeneğini tıklayın
+3. `apps/mobile/android` klasörünü seçin
+4. Gradle sync tamamlanmasını bekleyin
+5. Run > Run 'app' ile uygulamayı çalıştırın
+
+Detaylı kurulum için: [ANDROID_STUDIO_GUIDE.md](apps/mobile/ANDROID_STUDIO_GUIDE.md)
+
+### Web Sitesini Görüntüleme
+
+Web sitesini görüntülemek için `apps/web/index.html` dosyasını tarayıcınızda açın.
+
+## 📂 Proje Yapısı
+
+```
+FlowPay/
+├── apps/
+│   ├── mobile/              # React Native Mobil Uygulama
+│   │   ├── android/         # Android Native Kod
+│   │   ├── src/
+│   │   │   ├── components/  # Yeniden kullanılabilir bileşenler
+│   │   │   ├── screens/     # Uygulama ekranları
+│   │   │   ├── navigation/  # Navigasyon yapısı
+│   │   │   ├── services/    # API ve servisler
+│   │   │   ├── store/       # State yönetimi (Zustand)
+│   │   │   └── theme/       # Tema ve stiller
+│   │   ├── App.tsx          # Ana uygulama
+│   │   └── package.json
+│   │
+│   ├── web/                 # Web Sitesi
+│   │   ├── index.html       # Ana sayfa
+│   │   ├── privacy.html     # Gizlilik politikası
+│   │   ├── styles.css       # Stil dosyası
+│   │   └── script.js        # JavaScript
+│   │
+│   └── api/                 # Backend API (gelecek)
+│
+├── KURULUM_REHBERI.md       # Detaylı kurulum rehberi
+└── README.md                # Bu dosya
+```
+
+## 🛠️ Teknolojiler
+
+### Mobil Uygulama
+- **React Native** - Cross-platform mobil geliştirme
+- **Expo** - Geliştirme ve build araçları
+- **TypeScript** - Tip güvenli kod
+- **React Navigation** - Navigasyon yönetimi
+- **Zustand** - State yönetimi
+- **React Query** - Veri yönetimi
+- **Axios** - HTTP istekleri
+- **date-fns** - Tarih işlemleri
+
+### Web Sitesi
+- **HTML5** - Semantik yapı
+- **CSS3** - Modern stil ve animasyonlar
+- **Vanilla JavaScript** - Hafif ve hızlı
+- **Inter Font** - Modern tipografi
+
+## 📱 Ekran Görüntüleri
+
+### Mobil Uygulama
+- Dashboard - Finansal özet
+- Transactions - İşlem listesi
+- Budgets - Bütçe yönetimi
+- Goals - Hedef takibi
+- Profile - Kullanıcı profili
+
+### Web Sitesi
+- Hero Section - Etkileyici giriş
+- Features - Özellikler
+- Pricing - Fiyatlandırma planları
+- Testimonials - Kullanıcı yorumları
+
+## 🔒 Güvenlik
+
+- **AES-256 Şifreleme** - Tüm veriler şifreli
+- **HTTPS/TLS** - Güvenli veri iletimi
+- **Biyometrik Kimlik Doğrulama** - Parmak izi ve yüz tanıma
+- **Yerel Veri Saklama** - Hassas veriler cihazda
+- **KVKK ve GDPR Uyumlu** - Veri gizliliği standartları
+
+## 📄 Lisans
+
+Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
+
+## 🤝 Katkıda Bulunma
+
+Katkılarınızı bekliyoruz! Lütfen şu adımları izleyin:
+
+1. Bu repoyu fork edin
+2. Feature branch oluşturun (`git checkout -b feature/AmazingFeature`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Add some AmazingFeature'`)
+4. Branch'inizi push edin (`git push origin feature/AmazingFeature`)
+5. Pull Request oluşturun
+
+## 📞 İletişim
+
+- **E-posta:** support@flowpay.app
+- **Web:** www.flowpay.app
+- **GitHub:** [@ericwizard17](https://github.com/ericwizard17)
+
+## 🙏 Teşekkürler
+
+FlowPay'i kullandığınız için teşekkür ederiz! Finansal özgürlüğünüze giden yolda size yardımcı olmaktan mutluluk duyuyoruz.
+
+---
+
+**Not:** Bu proje aktif geliştirme aşamasındadır. Önerileriniz ve geri bildirimleriniz bizim için çok değerli!
+
+## 📈 Yol Haritası
+
+- [ ] Backend API geliştirmesi
+- [ ] Cloud senkronizasyon
+- [ ] iOS uygulaması
+- [ ] Web dashboard
+- [ ] Çoklu para birimi desteği
+- [ ] Fatura tarama (OCR)
+- [ ] Yatırım takibi
+- [ ] Aile bütçe paylaşımı
+
+## ⭐ Yıldız Verin!
+
+Bu projeyi beğendiyseniz, lütfen bir yıldız verin! ⭐
+
+---
+
+© 2024 FlowPay. Tüm hakları saklıdır.

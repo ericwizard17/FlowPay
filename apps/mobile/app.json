@@ -1,0 +1,80 @@
+{
+    "expo": {
+        "name": "FlowPay - Akıllı Finans",
+        "slug": "flowpay",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "automatic",
+        "scheme": "flowpay",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#667eea"
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.flowpay.app",
+            "buildNumber": "1",
+            "infoPlist": {
+                "CFBundleDisplayName": "FlowPay",
+                "NSCameraUsageDescription": "Fatura ve makbuz taramak için kamera erişimi gereklidir.",
+                "NSMicrophoneUsageDescription": "Sesli komutlar için mikrofon erişimi gereklidir.",
+                "NSFaceIDUsageDescription": "Güvenli giriş için Face ID kullanılır.",
+                "NSPhotoLibraryUsageDescription": "Fatura ve makbuz eklemek için galeri erişimi gereklidir."
+            }
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#667eea"
+            },
+            "package": "com.flowpay.app",
+            "versionCode": 1,
+            "permissions": [
+                "USE_BIOMETRIC",
+                "USE_FINGERPRINT"
+            ],
+            "playStoreUrl": "https://play.google.com/store/apps/details?id=com.flowpay.app"
+        },
+        "web": {
+            "favicon": "./assets/favicon.png",
+            "bundler": "metro"
+        },
+        "plugins": [
+            "expo-secure-store",
+            "expo-local-authentication",
+            [
+                "expo-build-properties",
+                {
+                    "android": {
+                        "compileSdkVersion": 34,
+                        "targetSdkVersion": 34,
+                        "buildToolsVersion": "34.0.0"
+                    }
+                }
+            ]
+        ],
+        "extra": {
+            "eas": {
+                "projectId": "your-project-id-here"
+            },
+            "privacyPolicyUrl": "https://flowpay.app/privacy",
+            "termsOfServiceUrl": "https://flowpay.app/terms"
+        },
+        "owner": "flowpay",
+        "privacy": "public",
+        "description": "FlowPay ile para yönetimi artık çok kolay! Gelir ve giderlerinizi takip edin, bütçenizi kontrol altında tutun ve finansal hedeflerinize ulaşın.",
+        "primaryColor": "#667eea",
+        "updates": {
+            "fallbackToCacheTimeout": 0,
+            "url": "https://u.expo.dev/your-project-id"
+        },
+        "runtimeVersion": {
+            "policy": "sdkVersion"
+        }
+    }
+}

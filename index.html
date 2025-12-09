@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FlowPay - Akıllı Finans Yönetimi. Gelir ve giderlerinizi takip edin, bütçenizi kontrol altında tutun ve finansal hedeflerinize ulaşın.">
+    <meta name="keywords" content="finans, para yönetimi, bütçe, gelir-gider takibi, tasarruf, mobil uygulama">
+    <meta name="author" content="FlowPay Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourusername.github.io/flowpay/">
+    <meta property="og:title" content="FlowPay - Akıllı Finans Yönetimi">
+    <meta property="og:description" content="Para yönetimi artık çok kolay! Gelir ve giderlerinizi takip edin, bütçenizi kontrol altında tutun.">
+    <meta property="og:image" content="https://yourusername.github.io/flowpay/apps/mobile/assets/icon.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://yourusername.github.io/flowpay/">
+    <meta property="twitter:title" content="FlowPay - Akıllı Finans Yönetimi">
+    <meta property="twitter:description" content="Para yönetimi artık çok kolay! Gelir ve giderlerinizi takip edin.">
+    <meta property="twitter:image" content="https://yourusername.github.io/flowpay/apps/mobile/assets/icon.png">
+
+    <title>FlowPay - Akıllı Finans Yönetimi</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--dark);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        /* Screenshots Section */
+        .screenshots {
+            padding: 80px 0;
+            background: var(--light);
+        }
+
+        .screenshots-carousel {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 2rem 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--light);
+        }
+
+        .screenshots-carousel::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .screenshots-carousel::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+
+        .screenshots-carousel::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .screenshot {
+            flex: 0 0 300px;
+            scroll-snap-align: center;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .screenshot:hover {
+            transform: scale(1.05);
+        }
+
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* How it Works */
+        .how-it-works {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .step p {
+            color: var(--gray);
+        }
+
+        /* Download Section */
+        .download {
+            padding: 80px 0;
+            background: var(--light);
+            text-align: center;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .store-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 30px;
+            background: var(--dark);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .store-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .store-button img {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 3rem auto 0;
+        }
+
+        .faq-item {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            margin-top: 1rem;
+            color: var(--gray);
+            display: none;
+            line-height: 1.8;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                gap: 2rem;
+            }
+
+            .stat-item h3 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+        }
+
+        .scroll-top.visible {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">
+                💰 FlowPay
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Özellikler</a></li>
+                <li><a href="#screenshots">Ekran Görüntüleri</a></li>
+                <li><a href="#how-it-works">Nasıl Çalışır</a></li>
+                <li><a href="#download">İndir</a></li>
+                <li><a href="#faq">SSS</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>💰 FlowPay</h1>
+            <p>Akıllı Finans Yönetimi - Para Yönetimi Artık Çok Kolay!</p>
+            <div class="cta-buttons">
+                <a href="#download" class="btn btn-primary">
+                    📱 Şimdi İndir
+                </a>
+                <a href="https://github.com/yourusername/flowpay" class="btn btn-secondary">
+                    💻 GitHub'da Görüntüle
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">✨ Güçlü Özellikler</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Gelir & Gider Takibi</h3>
+                    <p>Tüm finansal hareketlerinizi kolayca kaydedin ve takip edin. Kategori bazlı detaylı analiz yapın.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Görsel İstatistikler</h3>
+                    <p>Harcamalarınızı grafikler ve chartlar ile görselleştirin. Pasta, çizgi ve bar grafikleri.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Kategori Yönetimi</h3>
+                    <p>Özelleştirilebilir harcama kategorileri. Kendi kategorilerinizi oluşturun ve düzenleyin.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Bütçe Planlama</h3>
+                    <p>Kategorilere göre bütçe limitleri belirleyin. Aşım durumunda anında bildirim alın.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Finansal Hedefler</h3>
+                    <p>Tasarruf hedeflerinizi belirleyin ve takip edin. Hedefinize ne kadar yakın olduğunuzu görün.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Akıllı Bildirimler</h3>
+                    <p>Bütçe aşımları, hedef yaklaşımları ve önemli işlemler için otomatik bildirimler.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Biyometrik Güvenlik</h3>
+                    <p>Parmak izi veya yüz tanıma ile güvenli giriş. Verileriniz AES-256 ile şifrelenir.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌙</div>
+                    <h3>Dark Mode</h3>
+                    <p>Göz yormayan karanlık tema desteği. Otomatik sistem teması uyumu.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Modern Arayüz</h3>
+                    <p>Kullanıcı dostu, sezgisel ve modern tasarım. Hızlı ve akıcı kullanıcı deneyimi.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Offline Çalışma</h3>
+                    <p>İnternet bağlantısı olmadan da kullanın. Verileriniz cihazınızda güvenle saklanır.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Yedekleme</h3>
+                    <p>Verilerinizi yedekleyin ve geri yükleyin. Cihaz değiştirdiğinizde verilerinizi kaybetmeyin.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📤</div>
+                    <h3>Excel/CSV Export</h3>
+                    <p>Verilerinizi Excel veya CSV formatında dışa aktarın. Detaylı raporlar oluşturun.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section id="screenshots" class="screenshots">
+        <div class="container">
+            <h2 class="section-title">📱 Ekran Görüntüleri</h2>
+            <div class="screenshots-carousel">
+                <div class="screenshot">
+                    <img src="apps/mobile/assets/store/screenshots/mobile/01_dashboard.png" alt="Dashboard">
+                </div>
+                <div class="screenshot">
+                    <img src="apps/mobile/assets/store/screenshots/mobile/02_transactions.png" alt="İşlemler">
+                </div>
+                <div class="screenshot">
+                    <img src="apps/mobile/assets/store/screenshots/mobile/03_budgets.png" alt="Bütçeler">
+                </div>
+                <div class="screenshot">
+                    <img src="apps/mobile/assets/store/screenshots/mobile/04_goals.png" alt="Hedefler">
+                </div>
+                <div class="screenshot">
+                    <img src="apps/mobile/assets/store/screenshots/mobile/05_achievements.png" alt="Başarımlar">
+                </div>
+                <div class="screenshot">
+                    <img src="apps/mobile/assets/store/screenshots/mobile/06_stats.png" alt="İstatistikler">
+                </div>
+                <div class="screenshot">
+                    <img src="apps/mobile/assets/store/screenshots/mobile/07_settings.png" alt="Ayarlar">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title">📊 İstatistikler</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>Ücretsiz</p>
+                </div>
+                <div class="stat-item">
+                    <h3>12+</h3>
+                    <p>Güçlü Özellik</p>
+                </div>
+                <div class="stat-item">
+                    <h3>AES-256</h3>
+                    <p>Şifreleme</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Offline Çalışma</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">🚀 Nasıl Çalışır?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Uygulamayı İndir</h3>
+                    <p>Play Store'dan ücretsiz olarak FlowPay'i indirin ve yükleyin.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Hesap Oluştur</h3>
+                    <p>Google, Apple veya telefon numarası ile hızlıca kayıt olun.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>İşlemleri Kaydet</h3>
+                    <p>Gelir ve giderlerinizi kolayca ekleyin, kategorilere ayırın.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Bütçe Belirle</h3>
+                    <p>Kategoriler için aylık bütçe limitleri oluşturun.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <h3>Hedefler Koy</h3>
+                    <p>Finansal hedeflerinizi belirleyin ve takip edin.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <h3>Analiz Et</h3>
+                    <p>Grafikler ve raporlar ile harcamalarınızı analiz edin.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download">
+        <div class="container">
+            <h2 class="section-title">📲 Hemen İndirin</h2>
+            <p style="font-size: 1.2rem; color: var(--gray); margin-bottom: 2rem;">
+                FlowPay ile finansal özgürlüğe giden yolda ilk adımı atın!
+            </p>
+            <div class="download-buttons">
+                <a href="https://play.google.com/store/apps/details?id=com.flowpay.app" class="store-button">
+                    <span style="font-size: 2rem;">📱</span>
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.8rem; opacity: 0.8;">Şimdi İndir</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">Google Play</div>
+                    </div>
+                </a>
+                <a href="#" class="store-button" style="opacity: 0.5; cursor: not-allowed;">
+                    <span style="font-size: 2rem;">🍎</span>
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.8rem; opacity: 0.8;">Yakında</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">App Store</div>
+                    </div>
+                </a>
+            </div>
+            <p style="margin-top: 2rem; color: var(--gray);">
+                <strong>Open Source:</strong> Proje GitHub'da mevcut! 
+                <a href="https://github.com/yourusername/flowpay" style="color: var(--primary);">Repo'yu İncele</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <h2 class="section-title">❓ Sıkça Sorulan Sorular</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        FlowPay ücretsiz mi?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Evet! FlowPay tamamen ücretsiz bir uygulamadır. Tüm özellikler ücretsiz olarak kullanılabilir. Gelecekte premium özellikler eklenebilir, ancak temel özellikler her zaman ücretsiz kalacaktır.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Verilerim güvende mi?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Kesinlikle! Tüm verileriniz AES-256 şifreleme ile korunur. Veriler öncelikli olarak cihazınızda saklanır ve isteğe bağlı olarak şifreli bulut yedeklemesi yapabilirsiniz. Biyometrik güvenlik (parmak izi/yüz tanıma) ile ek koruma sağlanır.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Offline çalışıyor mu?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Evet! FlowPay internet bağlantısı olmadan da tam olarak çalışır. Tüm veriler cihazınızda saklanır ve senkronizasyon isteğe bağlıdır.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Banka hesabı bağlayabiliyor muyum?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Şu anda banka entegrasyonu bulunmamaktadır, ancak gelecek sürümlerde eklenecektir. Manuel olarak işlemlerinizi kolayca ekleyebilirsiniz.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Verilerimi nasıl yedeklerim?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Ayarlar menüsünden verilerinizi Excel/CSV formatında dışa aktarabilir veya şifreli bulut yedeklemesi yapabilirsiniz. Cihaz değişikliğinde verilerinizi kolayca geri yükleyebilirsiniz.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Hangi platformlarda çalışıyor?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        FlowPay şu anda Android (API 21+) cihazlarda kullanılabilir. iOS versiyonu yakında yayınlanacaktır.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Çoklu dil desteği var mı?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Şu anda uygulama Türkçe dilinde sunulmaktadır. Gelecek güncellemelerde İngilizce, Almanca ve diğer diller eklenecektir.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Open source mu?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Evet! FlowPay açık kaynak kodlu bir projedir ve MIT lisansı altında yayınlanmıştır. GitHub repomuzu ziyaret edebilir ve katkıda bulunabilirsiniz.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>💰 FlowPay</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin-top: 1rem; line-height: 1.8;">
+                        Akıllı finans yönetimi ile para yönetimi artık çok kolay. Gelir ve giderlerinizi takip edin, bütçenizi kontrol altında tutun.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://github.com/yourusername/flowpay" title="GitHub">💻</a>
+                        <a href="#" title="Twitter">🐦</a>
+                        <a href="#" title="Instagram">📸</a>
+                        <a href="#" title="LinkedIn">💼</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Ürün</h3>
+                    <ul>
+                        <li><a href="#features">Özellikler</a></li>
+                        <li><a href="#screenshots">Ekran Görüntüleri</a></li>
+                        <li><a href="#how-it-works">Nasıl Çalışır</a></li>
+                        <li><a href="#download">İndir</a></li>
+                        <li><a href="CHANGELOG.md">Değişiklikler</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Geliştiriciler</h3>
+                    <ul>
+                        <li><a href="https://github.com/yourusername/flowpay">GitHub Repo</a></li>
+                        <li><a href="README.md">Dokümantasyon</a></li>
+                        <li><a href="START.md">Hızlı Başlangıç</a></li>
+                        <li><a href="DEPLOYMENT_READY.md">Deployment</a></li>
+                        <li><a href="LICENSE">Lisans (MIT)</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Yasal</h3>
+                    <ul>
+                        <li><a href="PRIVACY_POLICY.md">Gizlilik Politikası</a></li>
+                        <li><a href="TERMS_OF_SERVICE.md">Kullanım Şartları</a></li>
+                        <li><a href="#faq">SSS</a></li>
+                        <li><a href="mailto:support@flowpay.com">İletişim</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 FlowPay. Tüm hakları saklıdır. MIT Lisansı ile açık kaynak.</p>
+                <p style="margin-top: 0.5rem;">Made with ❤️ by FlowPay Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('active');
+                const icon = item.querySelector('.faq-question span');
+                icon.textContent = item.classList.contains('active') ? '−' : '+';
+            });
+        });
+
+        // Scroll to Top
+        const scrollTopBtn = document.getElementById('scrollTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.8s ease-out';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .step, .stat-item').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
+

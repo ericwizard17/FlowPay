@@ -1,0 +1,73 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.production
+.env.development
+*.env
+
+# Build
+dist/
+build/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+coverage/
+.jest/
+
+# Misc
+*.orig
+.expo/
+.expo-shared/
+
+# Sensitive
+*.keystore
+!debug.keystore
+android-service-account.json
+google-services.json
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Prisma
+prisma/migrations/
+
+# Logs
+logs/
+*.log
+
+# Android
+*.apk
+*.aab
+*.dex
+*.class
+.gradle/
+local.properties
+
+# iOS
+*.ipa
+*.xcuserstate
+*.xcworkspace
+!default.xcworkspace
+Pods/

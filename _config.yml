@@ -1,0 +1,7 @@
+# GitHub Pages Configuration
+theme: jekyll-theme-minimal
+title: FlowPay - Akıllı Finans Yönetimi
+description: Para yönetimi artık çok kolay! Gelir ve giderlerinizi takip edin, bütçenizi kontrol altında tutun.
+show_downloads: true
+google_analytics: # Google Analytics ID eklenebilir
+

@@ -1,0 +1,21 @@
+{
+    "name": "flowpay",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "mobile": "cd apps/mobile && npm start",
+        "mobile:android": "cd apps/mobile && npm run android",
+        "mobile:build": "cd apps/mobile && npm run android:build",
+        "mobile:preview": "cd apps/mobile && npm run android:preview",
+        "api": "cd apps/api && npm run dev",
+        "db:migrate": "cd apps/api && npx prisma migrate dev",
+        "db:studio": "cd apps/api && npx prisma studio",
+        "db:seed": "cd apps/api && npx prisma db seed",
+        "setup": "npm install && cd apps/mobile && npm install && cd ../api && npm install",
+        "clean": "cd apps/mobile && rm -rf node_modules && cd ../api && rm -rf node_modules && rm -rf node_modules"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3",
+        "@types/node": "^20.10.6"
+    }
+}

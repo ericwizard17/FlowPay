@@ -1,0 +1,73 @@
+// Sade Finans Takip - Minimal Schema
+// SQLite kullanımı ile basit ve hızlı
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER & AUTH (Minimal)
+// ============================================
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  transactions Transaction[]
+  budgets      Budget[]
+
+  @@map("users")
+}
+
+// ============================================
+// TRANSACTIONS (Gelir/Gider)
+// ============================================
+
+model Transaction {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  amount    Float    // Pozitif = Gelir, Negatif = Gider
+  category  String   // "Market", "Ulaşım", "Eğlence", vb.
+  note      String?  // Opsiyonel açıklama
+  date      DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([date])
+  @@index([category])
+  @@map("transactions")
+}
+
+// ============================================
+// BUDGETS (Kategori Bazlı Limitler)
+// ============================================
+
+model Budget {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  category    String   // "Market", "Ulaşım", vb.
+  limitAmount Float    @map("limit_amount")
+  month       String   // Format: "2025-12"
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category, month])
+  @@index([userId])
+  @@map("budgets")
+}
