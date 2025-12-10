@@ -1,27 +1,71 @@
 import api from './api';
-import { Budget } from '../store/budgetStore';
+import { Budget } from '../types/types';
+
+export interface CreateBudgetData {
+    category: string;
+    limitAmount: number;
+    month?: string; // Format: YYYY-MM
+}
+
+export interface UpdateBudgetData {
+    category?: string;
+    limitAmount?: number;
+    month?: string;
+}
 
 export const budgetService = {
-    // Get all budgets for current month
-    getAll: async (month?: string): Promise<Budget[]> => {
-        const response = await api.get('/budgets', {
-            params: { month },
-        });
-        return response.data;
+    // Get all budgets for a specific month
+    async getAll(month?: string): Promise<Budget[]> {
+        try {
+            const params = new URLSearchParams();
+
+            if (month) {
+                params.append('month', month);
+            }
+
+            const response = await api.get<Budget[]>(`/budgets?${params.toString()}`);
+            return response.data;
+        } catch (error: any) {
+            throw new Error(error.response?.data?.error || 'Failed to fetch budgets');
+        }
     },
 
-    // Create a new budget
-    create: async (data: {
-        category: string;
-        limitAmount: number;
-        month?: string;
-    }): Promise<Budget> => {
-        const response = await api.post('/budgets', data);
-        return response.data;
+    // Get single budget by ID
+    async getById(id: string): Promise<Budget> {
+        try {
+            const response = await api.get<Budget>(`/budgets/${id}`);
+            return response.data;
+        } catch (error: any) {
+            throw new Error(error.response?.data?.error || 'Failed to fetch budget');
+        }
     },
 
-    // Delete a budget
-    delete: async (id: string): Promise<void> => {
-        await api.delete(`/budgets/${id}`);
+    // Create new budget
+    async create(data: CreateBudgetData): Promise<Budget> {
+        try {
+            const response = await api.post<Budget>('/budgets', data);
+            return response.data;
+        } catch (error: any) {
+            throw new Error(error.response?.data?.error || 'Failed to create budget');
+        }
+    },
+
+    // Update existing budget
+    async update(id: string, data: UpdateBudgetData): Promise<Budget> {
+        try {
+            const response = await api.put<Budget>(`/budgets/${id}`, data);
+            return response.data;
+        } catch (error: any) {
+            throw new Error(error.response?.data?.error || 'Failed to update budget');
+        }
+    },
+
+    // Delete budget
+    async delete(id: string): Promise<void> {
+        try {
+            await api.delete(`/budgets/${id}`);
+        } catch (error: any) {
+            throw new Error(error.response?.data?.error || 'Failed to delete budget');
+        }
     },
 };

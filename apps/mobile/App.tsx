@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, StatusBar, useColorScheme, ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import AuthScreen from './src/screens/AuthScreen';
 import { theme } from './src/theme';
+import { useAuthStore } from './src/store/authStore';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -21,40 +21,19 @@ const queryClient = new QueryClient({
 export default function App() {
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [currentUser, setCurrentUser] = useState(null);
+    const { isAuthenticated, isLoading, user, initialize, logout } = useAuthStore();
 
     useEffect(() => {
-        checkAuthStatus();
+        initialize();
     }, []);
 
-    const checkAuthStatus = async () => {
-        try {
-            const authStatus = await AsyncStorage.getItem('isAuthenticated');
-            const user = await AsyncStorage.getItem('currentUser');
-
-            if (authStatus === 'true' && user) {
-                setIsAuthenticated(true);
-                setCurrentUser(JSON.parse(user));
-            }
-        } catch (error) {
-            console.error('Auth check error:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     const handleAuthSuccess = (user: any) => {
-        setCurrentUser(user);
-        setIsAuthenticated(true);
+        // Auth state is already updated by authService and authStore
+        console.log('Auth success:', user);
     };
 
     const handleLogout = async () => {
-        await AsyncStorage.removeItem('isAuthenticated');
-        await AsyncStorage.removeItem('currentUser');
-        setIsAuthenticated(false);
-        setCurrentUser(null);
+        await logout();
     };
 
     if (isLoading) {
@@ -82,7 +61,7 @@ export default function App() {
                                 barStyle={isDark ? 'light-content' : 'dark-content'}
                                 backgroundColor={isDark ? theme.colors.dark.bg : theme.colors.light.bg}
                             />
-                            <AppNavigator onLogout={handleLogout} />
+                            <AppNavigator user={user} onLogout={handleLogout} />
                         </SafeAreaView>
                     </NavigationContainer>
                 )}

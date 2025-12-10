@@ -1,5 +1,5 @@
-// Sade Finans Takip - Minimal Schema
-// SQLite kullanımı ile basit ve hızlı
+// Sade Finans Takip - Enhanced Schema with Advanced Features
+// PostgreSQL kullanımı
 
 generator client {
   provider = "prisma-client-js"
@@ -11,7 +11,7 @@ datasource db {
 }
 
 // ============================================
-// USER & AUTH (Minimal)
+// USER & AUTH
 // ============================================
 
 model User {
@@ -23,8 +23,12 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   // Relations
-  transactions Transaction[]
-  budgets      Budget[]
+  transactions            Transaction[]
+  budgets                 Budget[]
+  recurringTransactions   RecurringTransaction[]
+  notifications           Notification[]
+  notificationSettings    NotificationSettings?
+  userSettings            UserSettings?
 
   @@map("users")
 }
@@ -40,6 +44,13 @@ model Transaction {
   category  String   // "Market", "Ulaşım", "Eğlence", vb.
   note      String?  // Opsiyonel açıklama
   date      DateTime @default(now())
+  
+  // Multi-currency support
+  currency        String   @default("TRY")
+  baseCurrency    String?  @map("base_currency")
+  baseAmount      Float?   @map("base_amount")
+  exchangeRate    Float?   @map("exchange_rate")
+  
   createdAt DateTime @default(now()) @map("created_at")
 
   // Relations
@@ -70,4 +81,105 @@ model Budget {
   @@unique([userId, category, month])
   @@index([userId])
   @@map("budgets")
+}
+
+// ============================================
+// RECURRING TRANSACTIONS (Tekrarlayan İşlemler)
+// ============================================
+
+model RecurringTransaction {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  
+  amount      Float
+  category    String
+  note        String?
+  
+  frequency   String   // 'daily', 'weekly', 'monthly', 'yearly'
+  startDate   DateTime @map("start_date")
+  endDate     DateTime? @map("end_date")
+  lastRun     DateTime? @map("last_run")
+  nextRun     DateTime @map("next_run")
+  
+  isActive    Boolean  @default(true) @map("is_active")
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([nextRun])
+  @@index([isActive])
+  @@map("recurring_transactions")
+}
+
+// ============================================
+// NOTIFICATIONS (Bildirimler)
+// ============================================
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  
+  type      String   // 'budget_alert', 'goal_reminder', 'recurring_transaction'
+  title     String
+  message   String
+  data      Json?    // Additional data (budgetId, amount, etc.)
+  
+  isRead    Boolean  @default(false) @map("is_read")
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
+
+// ============================================
+// NOTIFICATION SETTINGS
+// ============================================
+
+model NotificationSettings {
+  id                    String  @id @default(uuid())
+  userId                String  @unique @map("user_id")
+  
+  budgetAlerts          Boolean @default(true) @map("budget_alerts")
+  budgetAlertThreshold  Float   @default(90) @map("budget_alert_threshold") // Alert at 90% of budget
+  goalReminders         Boolean @default(true) @map("goal_reminders")
+  recurringReminders    Boolean @default(true) @map("recurring_reminders")
+  
+  pushEnabled           Boolean @default(false) @map("push_enabled")
+  pushToken             String? @map("push_token")
+  
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("notification_settings")
+}
+
+// ============================================
+// USER SETTINGS
+// ============================================
+
+model UserSettings {
+  id              String   @id @default(uuid())
+  userId          String   @unique @map("user_id")
+  
+  baseCurrency    String   @default("TRY") @map("base_currency")
+  
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("user_settings")
 }

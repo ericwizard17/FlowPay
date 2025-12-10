@@ -5,98 +5,75 @@ import {
     StyleSheet,
     TouchableOpacity,
     TextInput,
-    Image,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
-    Modal,
     Alert,
+    ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuthStore } from '../store/authStore';
+import { authService } from '../services/authService';
 
 interface AuthScreenProps {
     onAuthSuccess: (user: any) => void;
 }
 
 export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
-    const [phoneModalVisible, setPhoneModalVisible] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [otp, setOtp] = useState(['', '', '', '', '', '']);
-    const [otpStep, setOtpStep] = useState(false);
+    const [isLogin, setIsLogin] = useState(true);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleGoogleSignIn = async () => {
-        // In production, use @react-native-google-signin/google-signin
-        const mockUser = {
-            uid: 'google_' + Date.now(),
-            email: 'user@gmail.com',
-            displayName: 'Demo User',
-            photoURL: null,
-            provider: 'google',
-        };
+    const { login: setAuthState } = useAuthStore();
 
-        await AsyncStorage.setItem('currentUser', JSON.stringify(mockUser));
-        await AsyncStorage.setItem('isAuthenticated', 'true');
-        onAuthSuccess(mockUser);
-    };
-
-    const handleAppleSignIn = async () => {
-        // In production, use @invertase/react-native-apple-authentication
-        const mockUser = {
-            uid: 'apple_' + Date.now(),
-            email: 'user@icloud.com',
-            displayName: 'Demo User',
-            photoURL: null,
-            provider: 'apple',
-        };
-
-        await AsyncStorage.setItem('currentUser', JSON.stringify(mockUser));
-        await AsyncStorage.setItem('isAuthenticated', 'true');
-        onAuthSuccess(mockUser);
-    };
-
-    const sendOTP = () => {
-        if (!phoneNumber || phoneNumber.length < 10) {
-            Alert.alert('Hata', 'Lütfen geçerli bir telefon numarası girin');
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert('Hata', 'Lütfen email ve şifrenizi girin');
             return;
         }
 
-        // In production, send OTP via Firebase or SMS service
-        setOtpStep(true);
-        Alert.alert('Başarılı', `${phoneNumber} numarasına kod gönderildi`);
+        setLoading(true);
+        try {
+            const response = await authService.login(email, password);
+            setAuthState(response.user, response.token);
+            onAuthSuccess(response.user);
+        } catch (error: any) {
+            Alert.alert('Giriş Hatası', error.message || 'Giriş yapılamadı');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const verifyOTP = async () => {
-        const otpCode = otp.join('');
-        if (otpCode.length !== 6) {
-            Alert.alert('Hata', 'Lütfen 6 haneli kodu girin');
+    const handleRegister = async () => {
+        if (!email || !password || !name) {
+            Alert.alert('Hata', 'Lütfen tüm alanları doldurun');
             return;
         }
 
-        // In production, verify with backend
-        const mockUser = {
-            uid: 'phone_' + Date.now(),
-            email: null,
-            displayName: phoneNumber,
-            photoURL: null,
-            provider: 'phone',
-        };
+        if (password.length < 6) {
+            Alert.alert('Hata', 'Şifre en az 6 karakter olmalıdır');
+            return;
+        }
 
-        await AsyncStorage.setItem('currentUser', JSON.stringify(mockUser));
-        await AsyncStorage.setItem('isAuthenticated', 'true');
-        setPhoneModalVisible(false);
-        onAuthSuccess(mockUser);
+        setLoading(true);
+        try {
+            const response = await authService.register(email, password, name);
+            setAuthState(response.user, response.token);
+            onAuthSuccess(response.user);
+        } catch (error: any) {
+            Alert.alert('Kayıt Hatası', error.message || 'Kayıt oluşturulamadı');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleOtpChange = (value: string, index: number) => {
-        const newOtp = [...otp];
-        newOtp[index] = value;
-        setOtp(newOtp);
-
-        // Auto-verify when all 6 digits entered
-        if (newOtp.every(digit => digit.length === 1)) {
-            setTimeout(() => verifyOTP(), 300);
-        }
+    const toggleMode = () => {
+        setIsLogin(!isLogin);
+        setEmail('');
+        setPassword('');
+        setName('');
     };
 
     return (
@@ -111,38 +88,85 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
                 <ScrollView
                     contentContainerStyle={styles.scrollContent}
                     showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
                 >
                     <View style={styles.logoContainer}>
                         <Text style={styles.logoIcon}>💰</Text>
-                        <Text style={styles.logoText}>Finans Takip</Text>
+                        <Text style={styles.logoText}>FlowPay</Text>
                         <Text style={styles.subtitle}>
                             Finansal hedeflerinize ulaşmanın en kolay yolu
                         </Text>
                     </View>
 
                     <View style={styles.authCard}>
+                        <Text style={styles.authTitle}>
+                            {isLogin ? 'Giriş Yap' : 'Hesap Oluştur'}
+                        </Text>
+
+                        {!isLogin && (
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.inputLabel}>Ad Soyad</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Adınız ve soyadınız"
+                                    value={name}
+                                    onChangeText={setName}
+                                    autoCapitalize="words"
+                                    editable={!loading}
+                                />
+                            </View>
+                        )}
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Email</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="ornek@email.com"
+                                value={email}
+                                onChangeText={setEmail}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                editable={!loading}
+                            />
+                        </View>
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Şifre</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="En az 6 karakter"
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry
+                                autoCapitalize="none"
+                                editable={!loading}
+                            />
+                        </View>
+
                         <TouchableOpacity
-                            style={[styles.authButton, styles.googleButton]}
-                            onPress={handleGoogleSignIn}
+                            style={[styles.primaryButton, loading && styles.buttonDisabled]}
+                            onPress={isLogin ? handleLogin : handleRegister}
+                            disabled={loading}
                         >
-                            <Text style={styles.authButtonText}>🔍 Google ile Devam Et</Text>
+                            {loading ? (
+                                <ActivityIndicator color="#FFFFFF" />
+                            ) : (
+                                <Text style={styles.primaryButtonText}>
+                                    {isLogin ? 'Giriş Yap' : 'Kayıt Ol'}
+                                </Text>
+                            )}
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={[styles.authButton, styles.appleButton]}
-                            onPress={handleAppleSignIn}
+                            style={styles.switchButton}
+                            onPress={toggleMode}
+                            disabled={loading}
                         >
-                            <Text style={[styles.authButtonText, styles.appleButtonText]}>
-                                Apple ile Devam Et
-                            </Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.authButton, styles.phoneButton]}
-                            onPress={() => setPhoneModalVisible(true)}
-                        >
-                            <Text style={styles.authButtonText}>
-                                📱 Telefon Numarası ile Devam Et
+                            <Text style={styles.switchButtonText}>
+                                {isLogin
+                                    ? 'Hesabınız yok mu? Kayıt olun'
+                                    : 'Zaten hesabınız var mı? Giriş yapın'}
                             </Text>
                         </TouchableOpacity>
 
@@ -155,80 +179,6 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-
-            {/* Phone Auth Modal */}
-            <Modal
-                visible={phoneModalVisible}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={() => setPhoneModalVisible(false)}
-            >
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Telefon ile Giriş</Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setPhoneModalVisible(false);
-                                    setOtpStep(false);
-                                    setOtp(['', '', '', '', '', '']);
-                                }}
-                            >
-                                <Text style={styles.modalClose}>×</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        {!otpStep ? (
-                            <View>
-                                <Text style={styles.inputLabel}>Telefon Numaranız</Text>
-                                <TextInput
-                                    style={styles.phoneInput}
-                                    placeholder="+90 5XX XXX XX XX"
-                                    keyboardType="phone-pad"
-                                    value={phoneNumber}
-                                    onChangeText={setPhoneNumber}
-                                    maxLength={17}
-                                />
-                                <TouchableOpacity
-                                    style={styles.primaryButton}
-                                    onPress={sendOTP}
-                                >
-                                    <Text style={styles.primaryButtonText}>Kod Gönder</Text>
-                                </TouchableOpacity>
-                            </View>
-                        ) : (
-                            <View>
-                                <Text style={styles.otpInfo}>
-                                    {phoneNumber} numarasına gönderilen 6 haneli kodu girin
-                                </Text>
-                                <View style={styles.otpContainer}>
-                                    {otp.map((digit, index) => (
-                                        <TextInput
-                                            key={index}
-                                            style={styles.otpInput}
-                                            maxLength={1}
-                                            keyboardType="number-pad"
-                                            value={digit}
-                                            onChangeText={(value) => handleOtpChange(value, index)}
-                                        />
-                                    ))}
-                                </View>
-                                <TouchableOpacity
-                                    style={styles.primaryButton}
-                                    onPress={verifyOTP}
-                                >
-                                    <Text style={styles.primaryButtonText}>Doğrula</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={sendOTP} style={styles.resendButton}>
-                                    <Text style={styles.resendText}>
-                                        Kod gelmedi mi? <Text style={styles.resendLink}>Tekrar Gönder</Text>
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    </View>
-                </View>
-            </Modal>
         </LinearGradient>
     );
 }
@@ -264,6 +214,7 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         opacity: 0.9,
         textAlign: 'center',
+        paddingHorizontal: 20,
     },
     authCard: {
         backgroundColor: '#FFFFFF',
@@ -275,73 +226,15 @@ const styles = StyleSheet.create({
         shadowRadius: 20,
         elevation: 10,
     },
-    authButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 16,
-        borderRadius: 12,
-        marginBottom: 16,
-        borderWidth: 2,
-    },
-    googleButton: {
-        borderColor: '#DB4437',
-        backgroundColor: '#FFFFFF',
-    },
-    appleButton: {
-        borderColor: '#000000',
-        backgroundColor: '#000000',
-    },
-    phoneButton: {
-        borderColor: '#10B981',
-        backgroundColor: '#FFFFFF',
-    },
-    authButtonText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#000000',
-    },
-    appleButtonText: {
-        color: '#FFFFFF',
-    },
-    termsText: {
-        fontSize: 13,
-        color: '#6B7280',
-        textAlign: 'center',
-        marginTop: 16,
-        lineHeight: 20,
-    },
-    termsLink: {
-        color: '#667eea',
-        fontWeight: '600',
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContent: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 24,
-        padding: 32,
-        width: '90%',
-        maxWidth: 400,
-    },
-    modalHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    modalTitle: {
+    authTitle: {
         fontSize: 24,
         fontWeight: '700',
+        color: '#1F2937',
+        marginBottom: 24,
+        textAlign: 'center',
     },
-    modalClose: {
-        fontSize: 32,
-        color: '#6B7280',
-        fontWeight: '300',
+    inputContainer: {
+        marginBottom: 20,
     },
     inputLabel: {
         fontSize: 14,
@@ -349,57 +242,47 @@ const styles = StyleSheet.create({
         color: '#374151',
         marginBottom: 8,
     },
-    phoneInput: {
+    input: {
         borderWidth: 2,
         borderColor: '#E5E7EB',
         borderRadius: 12,
         padding: 14,
         fontSize: 16,
-        marginBottom: 20,
+        backgroundColor: '#F9FAFB',
     },
     primaryButton: {
         backgroundColor: '#667eea',
         padding: 16,
         borderRadius: 12,
         alignItems: 'center',
+        marginTop: 8,
+    },
+    buttonDisabled: {
+        opacity: 0.6,
     },
     primaryButtonText: {
         color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '600',
     },
-    otpInfo: {
-        textAlign: 'center',
-        color: '#6B7280',
-        marginBottom: 24,
-        fontSize: 14,
-    },
-    otpContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 24,
-    },
-    otpInput: {
-        width: 48,
-        height: 56,
-        borderWidth: 2,
-        borderColor: '#E5E7EB',
-        borderRadius: 12,
-        textAlign: 'center',
-        fontSize: 24,
-        fontWeight: '700',
-    },
-    resendButton: {
-        marginTop: 16,
+    switchButton: {
+        marginTop: 20,
         alignItems: 'center',
     },
-    resendText: {
+    switchButtonText: {
         fontSize: 14,
-        color: '#6B7280',
-    },
-    resendLink: {
         color: '#667eea',
         fontWeight: '600',
-        textDecorationLine: 'underline',
+    },
+    termsText: {
+        fontSize: 12,
+        color: '#6B7280',
+        textAlign: 'center',
+        marginTop: 24,
+        lineHeight: 18,
+    },
+    termsLink: {
+        color: '#667eea',
+        fontWeight: '600',
     },
 });

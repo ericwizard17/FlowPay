@@ -11,6 +11,10 @@ import budgetRoutes from './routes/budget.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import categoryRoutes from './routes/category.routes';
 import reportRoutes from './routes/report.routes';
+import recurringTransactionRoutes from './routes/recurringTransaction.routes';
+
+// Import cron jobs
+import { startRecurringTransactionJob } from './jobs/cronJobs';
 
 // Load environment variables
 dotenv.config();
@@ -57,6 +61,10 @@ app.use('/api/budgets', budgetRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/recurring-transactions', recurringTransactionRoutes);
+
+// Start cron jobs
+startRecurringTransactionJob();
 
 // Legacy AI analysis route (kept for backward compatibility)
 app.get('/api/ai/analysis', async (req, res, next) => {
